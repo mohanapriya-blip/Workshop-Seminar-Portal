@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Portal – WorkShop Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ████████████████████████████████████████
+     ADMIN LOGIN PAGE
+████████████████████████████████████████ -->
+<div id="adminLoginPage">
+<style>
+#adminLoginPage {
+  position:fixed; inset:0; z-index:600;
+  background:#07111F;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'DM Sans',sans-serif;
+  overflow:hidden;
+}
+/* Animated grid */
+#adminLoginPage::before {
+  content:''; position:absolute; inset:0;
+  background-image:linear-gradient(rgba(201,168,76,.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(201,168,76,.06) 1px,transparent 1px);
+  background-size:50px 50px;
+  animation:gridScroll 25s linear infinite;
+}
+@keyframes gridScroll { to{transform:translateY(50px)} }
+.adm-orb { position:absolute; border-radius:50%; filter:blur(90px); pointer-events:none; }
+.adm-orb1 { width:500px;height:500px;background:rgba(27,58,107,.35);top:-150px;right:-100px;animation:orbF 8s ease-in-out infinite; }
+.adm-orb2 { width:400px;height:400px;background:rgba(201,168,76,.12);bottom:-120px;left:-80px;animation:orbF 10s ease-in-out infinite reverse; }
+@keyframes orbF { 0%,100%{transform:scale(1) translateY(0)} 50%{transform:scale(1.08) translateY(-25px)} }
+.adm-login-wrap { position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;max-width:960px;width:100%;border-radius:16px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.6);border:1px solid rgba(201,168,76,.15); }
+.adm-login-left { background:linear-gradient(160deg,#0D1E35,#1B3A6B);padding:52px 44px;color:white;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden; }
+.adm-login-left::after { content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:linear-gradient(180deg,transparent,#C9A84C,transparent); }
+.adm-shield { width:64px;height:64px;background:linear-gradient(135deg,rgba(201,168,76,.2),rgba(201,168,76,.05));border:1px solid rgba(201,168,76,.3);border-radius:14px;display:grid;place-items:center;margin-bottom:28px; }
+.adm-shield svg { width:32px;height:32px;stroke:#C9A84C;fill:none;stroke-width:1.8; }
+.adm-login-left h1 { font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:700;margin-bottom:10px;line-height:1.2; }
+.adm-login-left p { font-size:.88rem;color:rgba(255,255,255,.55);line-height:1.7;margin-bottom:32px; }
+.adm-feature { display:flex;align-items:center;gap:12px;margin-bottom:14px;font-size:.83rem;color:rgba(255,255,255,.75); }
+.adm-feature-icon { width:30px;height:30px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);border-radius:8px;display:grid;place-items:center;flex-shrink:0; }
+.adm-feature-icon svg { width:14px;height:14px;stroke:#C9A84C;fill:none;stroke-width:2; }
+.adm-warning { margin-top:32px;background:rgba(193,18,31,.1);border:1px solid rgba(193,18,31,.25);border-radius:8px;padding:12px 14px;font-size:.76rem;color:rgba(255,100,100,.8);display:flex;align-items:flex-start;gap:8px; }
+.adm-warning svg { width:14px;height:14px;stroke:rgba(255,100,100,.8);fill:none;flex-shrink:0;margin-top:1px; }
+/* Right panel */
+.adm-login-right { background:#0B1929;padding:52px 44px;display:flex;flex-direction:column;justify-content:center; }
+.adm-login-right h2 { font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:white;margin-bottom:4px; }
+.adm-login-right > p { font-size:.82rem;color:rgba(255,255,255,.4);margin-bottom:28px; }
+.adm-social-row { display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px; }
+.adm-soc { display:flex;align-items:center;justify-content:center;gap:7px;padding:10px;border:1px solid rgba(255,255,255,.1);border-radius:8px;background:rgba(255,255,255,.04);color:rgba(255,255,255,.7);font-size:.78rem;font-weight:600;cursor:pointer;transition:.2s;font-family:'DM Sans',sans-serif; }
+.adm-soc:hover { border-color:rgba(201,168,76,.4);background:rgba(201,168,76,.07);color:white; }
+.adm-soc svg { width:16px;height:16px;flex-shrink:0; }
+.adm-divider { display:flex;align-items:center;gap:10px;margin-bottom:20px; }
+.adm-divider hr { flex:1;border:none;border-top:1px solid rgba(255,255,255,.08); }
+.adm-divider span { font-size:.72rem;color:rgba(255,255,255,.25); }
+.adm-err { background:rgba(193,18,31,.15);border:1px solid rgba(193,18,31,.3);border-radius:6px;padding:10px 14px;font-size:.8rem;color:#fca5a5;margin-bottom:14px;display:none; }
+.adm-err.show { display:block; }
+.adm-fg { margin-bottom:14px; }
+.adm-fg label { display:block;font-size:.68rem;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px; }
+.adm-fg input { width:100%;padding:11px 14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:white;font-size:.86rem;outline:none;transition:.2s;font-family:'DM Sans',sans-serif;box-sizing:border-box; }
+.adm-fg input::placeholder { color:rgba(255,255,255,.25); }
+.adm-fg input:focus { border-color:#C9A84C;background:rgba(201,168,76,.06);box-shadow:0 0 0 3px rgba(201,168,76,.1); }
+.adm-submit { width:100%;padding:13px;background:linear-gradient(135deg,#A0832A,#C9A84C);color:white;border:none;border-radius:8px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:.06em;text-transform:uppercase;transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px; }
+.adm-submit:hover { transform:translateY(-2px);box-shadow:0 8px 24px rgba(201,168,76,.3); }
+.adm-hint { margin-top:16px;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.12);border-radius:8px;padding:12px 14px;font-size:.76rem;color:rgba(255,255,255,.45);line-height:1.6; }
+.adm-hint strong { color:rgba(201,168,76,.9); }
+.adm-back { margin-top:20px;text-align:center;font-size:.78rem;color:rgba(255,255,255,.3); }
+.adm-back a { color:rgba(201,168,76,.7);cursor:pointer;font-weight:600; }
+.adm-back a:hover { color:#C9A84C; }
+@media(max-width:700px){.adm-login-wrap{grid-template-columns:1fr}.adm-login-left{display:none}}
+</style>
+<div class="adm-orb adm-orb1"></div>
+<div class="adm-orb adm-orb2"></div>
+<div class="adm-login-wrap">
+  <!-- Left branding panel -->
+  <div class="adm-login-left">
+    <div class="adm-shield">
+      <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    </div>
+    <h1>Admin Control Center</h1>
+    <p>Secure access portal for authorized administrators only. All activity is monitored and logged.</p>
+    <div class="adm-feature">
+      <div class="adm-feature-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+      Full workshop management
+    </div>
+    <div class="adm-feature">
+      <div class="adm-feature-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+      Student registrations &amp; reports
+    </div>
+    <div class="adm-feature">
+      <div class="adm-feature-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      Real-time analytics &amp; insights
+    </div>
+    <div class="adm-feature">
+      <div class="adm-feature-icon"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg></div>
+      Send notifications &amp; alerts
+    </div>
+    <div class="adm-warning">
+      <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Restricted area. Unauthorized access attempts are logged and reported.
+    </div>
+  </div>
+  <!-- Right login form -->
+  <div class="adm-login-right">
+    <h2>Administrator Sign In</h2>
+    <p>Use your institutional credentials or SSO</p>
+    <div class="adm-social-row">
+      <button class="adm-soc" onclick="adminSocialLogin('Google')">
+        <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        Google
+      </button>
+      <button class="adm-soc" onclick="adminSocialLogin('Microsoft')">
+        <svg viewBox="0 0 24 24"><rect x="1" y="1" width="10" height="10" fill="#F25022"/><rect x="13" y="1" width="10" height="10" fill="#7FBA00"/><rect x="1" y="13" width="10" height="10" fill="#00A4EF"/><rect x="13" y="13" width="10" height="10" fill="#FFB900"/></svg>
+        Microsoft
+      </button>
+      <button class="adm-soc" onclick="adminSocialLogin('SSO')">
+        <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        SSO
+      </button>
+    </div>
+    <div class="adm-divider"><hr><span>or credentials</span><hr></div>
+    <div class="adm-err" id="admErr">⚠️ Access denied. Invalid credentials.</div>
+    <div class="adm-fg">
+      <label>Admin Email</label>
+      <input type="email" id="admEmail" placeholder="mohanapriya@klh.edu.in" onkeydown="if(event.key==='Enter')adminLogin()">
+    </div>
+    <div class="adm-fg">
+      <label>Password</label>
+      <input type="password" id="admPass" placeholder="••••••••••" onkeydown="if(event.key==='Enter')adminLogin()">
+    </div>
+    <button class="adm-submit" onclick="adminLogin()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Secure Sign In
+    </button>
+    <div class="adm-hint">
+      <strong>Demo:</strong> mohanapriya@klh.edu.in &nbsp;/&nbsp; admin123
+    </div>
+    <div class="adm-back">
+      <a onclick="window.location.href='index.html'">← Back to main site</a>
+    </div>
+  </div>
+</div>
+</div><!-- /#adminLoginPage -->
+
+
+<!-- ████████████████████████████████████████
+     ADMIN PORTAL — FULL DASHBOARD
+████████████████████████████████████████ -->
+<div id="adminPortal" style="display:none;">
+<style>
+/* ══════════════════════════════════════
+   ADMIN PORTAL — LIGHT CORPORATE THEME
+══════════════════════════════════════ */
+#adminPortal {
+  position:fixed !important;
+  top:0 !important; left:0 !important;
+  width:100vw !important; height:100vh !important;
+  z-index:9000 !important;
+  background:#F0F4F8;
+  font-family:'DM Sans',sans-serif;
+  display:flex; flex-direction:column;
+  overflow:hidden;
+}
+/* ── Top Nav ── */
+.ap-nav {
+  height:60px; background:white;
+  border-bottom:1px solid #E2E8F0;
+  display:flex; align-items:center;
+  padding:0 28px; gap:16px; flex-shrink:0;
+  box-shadow:0 1px 8px rgba(27,58,107,.06);
+}
+.ap-nav-logo { display:flex; align-items:center; gap:10px; margin-right:32px; text-decoration:none; }
+.ap-nav-logo-box { width:36px; height:36px; background:linear-gradient(135deg,#122649,#1B3A6B); border-radius:9px; display:grid; place-items:center; }
+.ap-nav-logo-box svg { width:17px; height:17px; stroke:white; fill:none; stroke-width:2.2; }
+.ap-nav-logo-name { font-family:'Playfair Display',serif; font-weight:800; font-size:1rem; color:#0D1B2A; }
+.ap-nav-logo-sub { font-size:.58rem; color:#94A3B8; display:block; margin-top:-2px; letter-spacing:.04em; }
+.ap-nav-links { display:flex; gap:2px; flex:1; }
+.ap-nav-link { padding:7px 16px; border-radius:8px; font-size:.84rem; font-weight:500; color:#64748B; cursor:pointer; transition:.15s; border:none; background:none; font-family:'DM Sans',sans-serif; }
+.ap-nav-link:hover { color:#1B3A6B; background:#F1F5F9; }
+.ap-nav-link.active { color:#1B3A6B; background:#EEF2FF; font-weight:700; }
+.ap-nav-right { display:flex; align-items:center; gap:10px; }
+.ap-nav-search { display:flex; align-items:center; gap:7px; background:#F8FAFC; border:1.5px solid #E2E8F0; border-radius:9px; padding:7px 12px; }
+.ap-nav-search input { border:none; background:transparent; font-size:.82rem; outline:none; width:150px; color:#0D1B2A; font-family:'DM Sans',sans-serif; }
+.ap-nav-search svg { width:14px; height:14px; stroke:#94A3B8; fill:none; flex-shrink:0; }
+.ap-notif-bell { width:36px; height:36px; background:#F8FAFC; border:1.5px solid #E2E8F0; border-radius:9px; display:grid; place-items:center; cursor:pointer; position:relative; transition:.15s; }
+.ap-notif-bell:hover { border-color:#1B3A6B; background:#EEF2FF; }
+.ap-notif-bell svg { width:16px; height:16px; stroke:#64748B; fill:none; }
+.ap-notif-badge { position:absolute; top:-4px; right:-4px; width:16px; height:16px; background:#C9A84C; border-radius:50%; font-size:.62rem; font-weight:800; color:white; display:grid; place-items:center; border:2px solid white; }
+.ap-admin-pill { display:flex; align-items:center; gap:8px; background:#F8FAFC; border:1.5px solid #E2E8F0; border-radius:24px; padding:5px 14px 5px 5px; cursor:pointer; transition:.15s; }
+.ap-admin-pill:hover { border-color:#C9A84C; }
+.ap-admin-av { width:30px; height:30px; background:linear-gradient(135deg,#122649,#C9A84C); border-radius:50%; display:grid; place-items:center; font-size:.78rem; font-weight:800; color:white; }
+.ap-admin-name { font-size:.82rem; font-weight:600; color:#0D1B2A; }
+.ap-admin-role { font-size:.66rem; color:#94A3B8; }
+.ap-logout { padding:7px 16px; background:#FEF2F2; border:1.5px solid #FECACA; border-radius:9px; color:#DC2626; font-size:.8rem; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; transition:.15s; letter-spacing:.04em; }
+.ap-logout:hover { background:#FEE2E2; }
+/* ── Body Layout ── */
+.ap-body { display:flex; flex:1; overflow:hidden; }
+/* ── Sidebar ── */
+.ap-sidebar { width:220px; background:white; border-right:1px solid #E2E8F0; flex-shrink:0; display:flex; flex-direction:column; overflow-y:auto; padding:20px 12px; }
+.ap-sb-section { margin-bottom:24px; }
+.ap-sb-label { font-size:.65rem; font-weight:800; color:#94A3B8; text-transform:uppercase; letter-spacing:.1em; padding:0 10px; margin-bottom:8px; }
+.ap-sb-item { display:flex; align-items:center; gap:9px; padding:9px 10px; border-radius:9px; cursor:pointer; font-size:.84rem; font-weight:500; color:#64748B; transition:.15s; margin-bottom:2px; border:none; background:none; width:100%; text-align:left; font-family:'DM Sans',sans-serif; }
+.ap-sb-item:hover { color:#1B3A6B; background:#F1F5F9; }
+.ap-sb-item.active { color:#1B3A6B; background:#EEF2FF; font-weight:700; }
+.ap-sb-item svg { width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:2; flex-shrink:0; }
+.ap-sb-badge { margin-left:auto; padding:2px 7px; border-radius:10px; font-size:.65rem; font-weight:800; background:#F1F5F9; color:#64748B; }
+.ap-sb-item.active .ap-sb-badge { background:rgba(27,58,107,.1); color:#1B3A6B; }
+.ap-sb-sys { margin:auto 0 0; padding:14px; background:#F8FAFC; border-radius:10px; border:1px solid #E2E8F0; }
+.ap-sb-sys-title { font-size:.72rem; font-weight:700; color:#0D1B2A; margin-bottom:10px; }
+.ap-sb-sys-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:7px; font-size:.73rem; color:#64748B; }
+.ap-sb-sys-dot { width:8px; height:8px; border-radius:50%; }
+/* ── Main Content ── */
+.ap-main { flex:1; overflow-y:auto; padding:24px 28px; }
+/* ── Page Header ── */
+.ap-page-hdr { margin-bottom:22px; }
+.ap-welcome { font-family:'Playfair Display',serif; font-size:1.7rem; font-weight:800; color:#0D1B2A; margin-bottom:4px; }
+.ap-welcome-sub { font-size:.86rem; color:#94A3B8; display:flex; align-items:center; gap:8px; }
+.ap-live-dot { width:7px; height:7px; background:#22C55E; border-radius:50%; animation:admPls 2s infinite; flex-shrink:0; }
+@keyframes admPls { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.4)} }
+/* ── Stat Cards ── */
+.ap-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:22px; }
+.ap-stat { background:white; border-radius:12px; padding:18px 20px; border:1.5px solid #E2E8F0; transition:.2s; cursor:default; box-shadow:0 2px 8px rgba(27,58,107,.04); }
+.ap-stat:hover { border-color:#C9A84C; transform:translateY(-2px); box-shadow:0 6px 20px rgba(201,168,76,.12); }
+.ap-stat-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.ap-stat-icon { width:40px; height:40px; border-radius:10px; display:grid; place-items:center; }
+.ap-stat-icon svg { width:18px; height:18px; fill:none; stroke-width:2; }
+.ap-stat-trend { font-size:.72rem; font-weight:700; padding:3px 8px; border-radius:6px; letter-spacing:.02em; }
+.apt-up { background:#ECFDF5; color:#059669; }
+.apt-down { background:#FEF2F2; color:#DC2626; }
+.apt-new { background:#FFF7ED; color:#C2410C; }
+.ap-stat-num { font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:800; color:#0D1B2A; line-height:1; margin-bottom:4px; }
+.ap-stat-label { font-size:.78rem; color:#94A3B8; font-weight:500; }
+/* ── Dashboard grid ── */
+.ap-dashboard-grid { display:grid; grid-template-columns:1fr 1fr 300px; gap:16px; }
+.ap-dashboard-left { display:flex; flex-direction:column; gap:16px; }
+.ap-dashboard-mid  { display:flex; flex-direction:column; gap:16px; }
+/* ── Cards ── */
+.apc { background:white; border-radius:12px; border:1.5px solid #E2E8F0; box-shadow:0 2px 8px rgba(27,58,107,.04); }
+.apc-head { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid #F1F5F9; }
+.apc-title { font-family:'Playfair Display',serif; font-size:.95rem; font-weight:700; color:#0D1B2A; }
+.apc-sub { font-size:.74rem; color:#94A3B8; margin-top:2px; }
+.apc-body { padding:16px 20px; }
+.apc-live { display:flex; align-items:center; gap:5px; font-size:.7rem; font-weight:700; color:#22C55E; letter-spacing:.05em; text-transform:uppercase; }
+.apc-live::before { content:''; width:6px; height:6px; background:#22C55E; border-radius:50%; animation:admPls 2s infinite; }
+/* ── Bar Chart ── */
+.adm-bar-wrap { display:flex; align-items:flex-end; gap:8px; height:90px; padding-top:8px; }
+.adm-bc-col { display:flex; flex-direction:column; align-items:center; gap:4px; flex:1; }
+.adm-bc-val { font-size:.65rem; font-weight:700; color:#64748B; }
+.adm-bc-bar { width:100%; border-radius:4px 4px 0 0; transition:.8s cubic-bezier(.34,1.56,.64,1); min-height:4px; }
+.adm-bc-day { font-size:.65rem; color:#94A3B8; font-weight:500; }
+/* ── Donut ── */
+.adm-donut-wrap { display:flex; align-items:center; gap:20px; padding:4px 0; }
+.adm-donut-legend { display:flex; flex-direction:column; gap:8px; }
+.adm-dl-item { display:flex; align-items:center; gap:8px; font-size:.78rem; color:#64748B; }
+.adm-dl-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+/* ── Tables ── */
+.adm-table { width:100%; border-collapse:collapse; font-size:.82rem; }
+.adm-table thead tr { border-bottom:2px solid #F1F5F9; }
+.adm-table th { padding:8px 12px; text-align:left; font-size:.7rem; font-weight:800; color:#94A3B8; text-transform:uppercase; letter-spacing:.07em; white-space:nowrap; }
+.adm-table td { padding:11px 12px; border-bottom:1px solid #F8FAFC; color:#374151; vertical-align:middle; }
+.adm-table tr:hover td { background:#FAFBFF; }
+.adm-table tr:last-child td { border-bottom:none; }
+.adm-badge { display:inline-block; padding:3px 9px; border-radius:5px; font-size:.68rem; font-weight:800; letter-spacing:.05em; text-transform:uppercase; }
+.adb-green  { background:#ECFDF5; color:#059669; }
+.adb-yellow { background:#FFF7ED; color:#C2410C; }
+.adb-blue   { background:#EEF2FF; color:#4338CA; }
+.adb-red    { background:#FEF2F2; color:#DC2626; }
+.adb-navy   { background:rgba(27,58,107,.08); color:#1B3A6B; }
+/* ── Quick Actions Panel ── */
+.ap-quick-panel { display:flex; flex-direction:column; gap:12px; }
+.ap-quick-welcome { background:linear-gradient(135deg,#122649,#1B3A6B); border-radius:12px; padding:22px; }
+.ap-quick-welcome h3 { font-family:'Playfair Display',serif; font-size:1rem; color:white; font-weight:700; margin-bottom:4px; }
+.ap-quick-welcome p { font-size:.76rem; color:rgba(255,255,255,.55); margin-bottom:16px; line-height:1.5; }
+.ap-quick-actions { display:flex; flex-direction:column; gap:8px; }
+.aq-btn { display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:9px; border:none; cursor:pointer; font-size:.82rem; font-weight:600; font-family:'DM Sans',sans-serif; transition:.15s; text-align:left; width:100%; }
+.aqb-gold { background:rgba(201,168,76,.15); color:#E8C96B; }
+.aqb-gold:hover { background:rgba(201,168,76,.25); }
+.aqb-white { background:rgba(255,255,255,.08); color:rgba(255,255,255,.7); }
+.aqb-white:hover { background:rgba(255,255,255,.14); color:white; }
+.aq-btn svg { width:15px; height:15px; stroke:currentColor; fill:none; stroke-width:2; flex-shrink:0; }
+/* ── Mini Workshop Cards ── */
+.ap-mini-ws { padding:10px 14px; border:1.5px solid #E2E8F0; border-radius:9px; cursor:pointer; transition:.15s; }
+.ap-mini-ws:hover { border-color:#C9A84C; background:#FFFBF0; }
+.ap-mini-ws-title { font-size:.82rem; font-weight:700; color:#0D1B2A; margin-bottom:4px; }
+.ap-mini-ws-meta { font-size:.72rem; color:#94A3B8; }
+.ap-mini-seat-bar { height:4px; background:#F1F5F9; border-radius:2px; margin-top:8px; overflow:hidden; }
+.ap-mini-seat-fill { height:100%; border-radius:2px; background:linear-gradient(90deg,#A0832A,#C9A84C); }
+/* ── Feed ── */
+.adm-feed-item { display:flex; align-items:flex-start; gap:10px; padding:10px 0; border-bottom:1px solid #F8FAFC; }
+.adm-feed-item:last-child { border-bottom:none; padding-bottom:0; }
+.adm-feed-icon { width:32px; height:32px; border-radius:9px; display:grid; place-items:center; font-size:.9rem; flex-shrink:0; }
+.adm-feed-text { font-size:.8rem; color:#374151; line-height:1.5; }
+.adm-feed-time { font-size:.7rem; color:#94A3B8; margin-top:2px; }
+/* ── Workshops page ── */
+.ap-ws-page-grid { display:grid; grid-template-columns:200px 1fr; gap:16px; }
+.ap-ws-filter-panel { background:white; border-radius:12px; border:1.5px solid #E2E8F0; padding:18px; height:fit-content; }
+.ap-ws-filter-panel h4 { font-size:.75rem; font-weight:800; color:#94A3B8; text-transform:uppercase; letter-spacing:.08em; margin-bottom:12px; }
+.ap-ws-filter-item { display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:8px; cursor:pointer; font-size:.83rem; font-weight:500; color:#64748B; transition:.15s; margin-bottom:2px; }
+.ap-ws-filter-item:hover { color:#1B3A6B; background:#F1F5F9; }
+.ap-ws-filter-item.active { color:#1B3A6B; background:#EEF2FF; font-weight:700; }
+.ap-ws-filter-item svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:2; flex-shrink:0; }
+.ap-ws-right { display:flex; flex-direction:column; gap:14px; }
+.ap-ws-toolbar { background:white; border-radius:12px; border:1.5px solid #E2E8F0; padding:14px 18px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.ap-ws-search { flex:1; min-width:160px; display:flex; align-items:center; gap:8px; background:#F8FAFC; border:1.5px solid #E2E8F0; border-radius:8px; padding:8px 12px; }
+.ap-ws-search input { border:none; background:transparent; font-size:.83rem; outline:none; color:#0D1B2A; font-family:'DM Sans',sans-serif; flex:1; }
+.ap-ws-search svg { width:14px; height:14px; stroke:#94A3B8; fill:none; flex-shrink:0; }
+.ap-ws-tabs { display:flex; gap:4px; }
+.ap-ws-tab { padding:7px 14px; border-radius:7px; font-size:.78rem; font-weight:600; color:#64748B; border:1.5px solid #E2E8F0; background:white; cursor:pointer; transition:.15s; font-family:'DM Sans',sans-serif; }
+.ap-ws-tab.active { background:#EEF2FF; color:#1B3A6B; border-color:#C7D2F8; }
+.ap-ws-tab:hover { border-color:#1B3A6B; }
+.ap-add-ws-btn { padding:8px 18px; background:linear-gradient(135deg,#A0832A,#C9A84C); color:white; border:none; border-radius:8px; font-size:.82rem; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; letter-spacing:.04em; white-space:nowrap; transition:.15s; }
+.ap-add-ws-btn:hover { transform:translateY(-1px); box-shadow:0 4px 14px rgba(201,168,76,.3); }
+/* Workshop cards */
+.ap-ws-cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; }
+.ap-wsc { background:white; border-radius:12px; border:1.5px solid #E2E8F0; overflow:hidden; transition:.2s; cursor:pointer; }
+.ap-wsc:hover { border-color:#C9A84C; transform:translateY(-3px); box-shadow:0 8px 24px rgba(201,168,76,.12); }
+.ap-wsc-thumb { height:130px; position:relative; overflow:hidden; }
+.ap-wsc-type { position:absolute; top:10px; right:10px; padding:3px 9px; border-radius:4px; font-size:.65rem; font-weight:800; text-transform:uppercase; letter-spacing:.06em; }
+.ap-wsc-body { padding:14px; }
+.ap-wsc-title { font-weight:700; font-size:.88rem; color:#0D1B2A; margin-bottom:8px; line-height:1.3; }
+.ap-wsc-info { display:flex; align-items:center; gap:5px; font-size:.74rem; color:#64748B; margin-bottom:4px; }
+.ap-wsc-info svg { width:12px; height:12px; stroke:currentColor; fill:none; stroke-width:2; flex-shrink:0; }
+.ap-wsc-bar { height:4px; background:#F1F5F9; border-radius:2px; margin:10px 0 6px; overflow:hidden; }
+.ap-wsc-bar-fill { height:100%; border-radius:2px; }
+.ap-wsc-foot { display:flex; justify-content:space-between; align-items:center; margin-top:8px; }
+.ap-wsc-foot-btn { padding:5px 13px; border-radius:6px; font-size:.73rem; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; border:none; transition:.15s; }
+.apwfb-view { background:#F1F5F9; color:#1B3A6B; }
+.apwfb-view:hover { background:#EEF2FF; }
+.apwfb-reg { background:linear-gradient(135deg,#A0832A,#C9A84C); color:white; }
+.apwfb-reg:hover { box-shadow:0 3px 10px rgba(201,168,76,.3); transform:translateY(-1px); }
+/* ── Add Workshop Form ── */
+.ap-add-form { background:white; border-radius:12px; border:2px dashed #C9A84C; padding:24px; margin-bottom:14px; display:none; }
+.ap-add-form h3 { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:#0D1B2A; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+.apf-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+.apf-fg label { display:block; font-size:.7rem; font-weight:800; color:#94A3B8; text-transform:uppercase; letter-spacing:.08em; margin-bottom:5px; }
+.apf-fg input, .apf-fg select, .apf-fg textarea { width:100%; padding:9px 12px; border:1.5px solid #E2E8F0; border-radius:8px; font-size:.83rem; color:#0D1B2A; background:#FAFBFF; outline:none; font-family:'DM Sans',sans-serif; transition:.15s; box-sizing:border-box; }
+.apf-fg input:focus, .apf-fg select:focus, .apf-fg textarea:focus { border-color:#C9A84C; box-shadow:0 0 0 3px rgba(201,168,76,.1); }
+.apf-fg textarea { resize:vertical; min-height:80px; }
+.apf-submit { padding:10px 24px; background:linear-gradient(135deg,#A0832A,#C9A84C); color:white; border:none; border-radius:8px; font-size:.84rem; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; letter-spacing:.05em; transition:.2s; }
+.apf-submit:hover { transform:translateY(-1px); box-shadow:0 6px 18px rgba(201,168,76,.35); }
+/* ── Registrations ── */
+.ap-reg-toolbar { background:white; border-radius:12px; border:1.5px solid #E2E8F0; padding:14px 18px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+.ap-reg-tabs { display:flex; gap:0; border-radius:8px; overflow:hidden; border:1.5px solid #E2E8F0; }
+.ap-reg-tab { padding:8px 16px; font-size:.79rem; font-weight:600; color:#64748B; background:white; cursor:pointer; font-family:'DM Sans',sans-serif; border-right:1px solid #E2E8F0; transition:.15s; white-space:nowrap; }
+.ap-reg-tab:last-child { border-right:none; }
+.ap-reg-tab.active { background:#EEF2FF; color:#1B3A6B; }
+.ap-reg-tab:hover:not(.active) { background:#F8FAFC; }
+.ap-reg-filter-row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.ap-reg-select { padding:7px 12px; border:1.5px solid #E2E8F0; border-radius:8px; font-size:.8rem; color:#64748B; background:white; cursor:pointer; outline:none; font-family:'DM Sans',sans-serif; transition:.15s; }
+.ap-reg-select:focus { border-color:#C9A84C; }
+.ap-reg-btn { padding:8px 18px; border-radius:8px; font-size:.8rem; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; border:none; transition:.15s; letter-spacing:.04em; }
+.adrb-gold { background:linear-gradient(135deg,#A0832A,#C9A84C); color:white; }
+.adrb-gold:hover { box-shadow:0 4px 12px rgba(201,168,76,.3); }
+.adrb-outline { background:white; color:#1B3A6B; border:1.5px solid #E2E8F0; }
+.adrb-outline:hover { border-color:#1B3A6B; background:#EEF2FF; }
+/* ── Notifications ── */
+.ap-notif-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.notif-to-wrap { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
+.ntag { padding:5px 12px; border-radius:20px; border:1.5px solid #E2E8F0; font-size:.76rem; font-weight:600; color:#64748B; cursor:pointer; transition:.15s; }
+.ntag.sel { background:#EEF2FF; color:#1B3A6B; border-color:#C7D2F8; }
+.ntag:hover:not(.sel) { border-color:#1B3A6B; }
+.ntag-label { font-size:.65rem; color:#94A3B8; text-transform:uppercase; letter-spacing:.08em; font-weight:800; margin-bottom:8px; }
+.notif-msg-area { width:100%; min-height:110px; padding:12px 14px; border:1.5px solid #E2E8F0; border-radius:10px; font-size:.84rem; font-family:'DM Sans',sans-serif; color:#0D1B2A; resize:vertical; outline:none; transition:.15s; box-sizing:border-box; }
+.notif-msg-area:focus { border-color:#C9A84C; box-shadow:0 0 0 3px rgba(201,168,76,.1); }
+.notif-send-row { display:flex; gap:8px; margin-top:12px; }
+.ns-btn { padding:9px 20px; border-radius:8px; font-size:.82rem; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; border:none; transition:.15s; letter-spacing:.04em; }
+.nsb-gold { background:linear-gradient(135deg,#A0832A,#C9A84C); color:white; }
+.nsb-gold:hover { box-shadow:0 4px 12px rgba(201,168,76,.3); }
+.nsb-outline { background:white; color:#64748B; border:1.5px solid #E2E8F0; }
+/* ── Seat Monitor ── */
+.ap-seat-card { background:white; border-radius:12px; border:1.5px solid #E2E8F0; padding:18px; transition:.2s; }
+.ap-seat-card:hover { border-color:#C9A84C; box-shadow:0 4px 16px rgba(201,168,76,.1); }
+.ap-seat-card.alert { border-color:#FECACA; }
+.ap-seat-card.warn  { border-color:#FED7AA; }
+/* ── Student Directory ── */
+.ap-stu-card { background:white; border-radius:12px; border:1.5px solid #E2E8F0; padding:16px; transition:.2s; cursor:pointer; }
+.ap-stu-card:hover { border-color:#C9A84C; transform:translateY(-2px); box-shadow:0 6px 18px rgba(201,168,76,.1); }
+/* ── Heatmap ── */
+.ap-heatmap-cell { flex:1; height:30px; border-radius:4px; cursor:default; transition:.2s; }
+.ap-heatmap-cell:hover { transform:scale(1.15); }
+/* ── Toast ── */
+.adm-toast { position:fixed; bottom:24px; right:24px; z-index:999; background:white; border:1.5px solid #E2E8F0; border-left:4px solid #C9A84C; border-radius:10px; padding:13px 18px; font-size:.83rem; color:#0D1B2A; box-shadow:0 8px 24px rgba(0,0,0,.1); max-width:280px; transform:translateY(80px); opacity:0; transition:.3s cubic-bezier(.34,1.56,.64,1); }
+.adm-toast.show { transform:translateY(0); opacity:1; }
+/* ── Clock strip ── */
+.ap-time-strip { background:white; border-bottom:1px solid #F1F5F9; padding:6px 28px; display:flex; align-items:center; gap:16px; flex-shrink:0; font-size:.74rem; color:#94A3B8; }
+.ap-time-strip strong { color:#0D1B2A; font-weight:700; }
+.ap-time-live { display:flex; align-items:center; gap:5px; }
+.ap-time-live::before { content:''; width:6px; height:6px; background:#C9A84C; border-radius:50%; animation:admPls 2s infinite; }
+@media(max-width:1100px) {
+  .ap-stats { grid-template-columns:repeat(2,1fr); }
+  .ap-dashboard-grid { grid-template-columns:1fr; }
+}
+@media(max-width:800px) {
+  .ap-sidebar { display:none; }
+  .ap-stats { grid-template-columns:1fr 1fr; }
+  .ap-ws-page-grid { grid-template-columns:1fr; }
+  .ap-notif-grid { grid-template-columns:1fr; }
+}
+</style>
+
+<!-- TOP NAV -->
+<div class="ap-nav">
+  <div class="ap-nav-logo">
+    <div class="ap-nav-logo-box"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+    <div><div class="ap-nav-logo-name">Workshop Seminar</div><div class="ap-nav-logo-sub">Coordination &amp; Registration</div></div>
+  </div>
+  <div class="ap-nav-links">
+    <button class="ap-nav-link active" onclick="apShowPage('dashboard',this)">Home</button>
+    <button class="ap-nav-link" onclick="apShowPage('workshops',this)">Workshops</button>
+    <button class="ap-nav-link" onclick="apShowPage('registrations',this)">Registrations</button>
+    <button class="ap-nav-link" onclick="apShowPage('notifications',this)">Notifications</button>
+    <button class="ap-nav-link" onclick="apShowPage('analytics',this)">Analytics</button>
+  </div>
+  <div class="ap-nav-right">
+    <div class="ap-nav-search">
+      <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search anything...">
+    </div>
+    <div class="ap-notif-bell" onclick="admToast('🔔 3 new notifications')">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <div class="ap-notif-badge">3</div>
+    </div>
+    <div class="ap-admin-pill">
+      <div class="ap-admin-av" id="apAdminAv">A</div>
+      <div><div class="ap-admin-name" id="apAdminName">Admin</div><div class="ap-admin-role">Administrator</div></div>
+    </div>
+    <button class="ap-logout" onclick="adminLogout()">Logout</button>
+  </div>
+</div>
+
+<!-- LIVE TIME STRIP -->
+<div class="ap-time-strip">
+  <div class="ap-time-live"><strong id="apClockNew">--:--:--</strong></div>
+  <span id="apDateNew">Loading...</span>
+  <span style="margin-left:auto;display:flex;align-items:center;gap:5px;color:#22C55E;font-weight:700;">
+    <span style="width:6px;height:6px;background:#22C55E;border-radius:50%;display:inline-block;"></span>
+    All Systems Operational
+  </span>
+</div>
+
+<!-- BODY -->
+<div class="ap-body">
+
+  <!-- SIDEBAR -->
+  <div class="ap-sidebar">
+    <div class="ap-sb-section">
+      <div class="ap-sb-label">Navigation</div>
+      <button class="ap-sb-item active" onclick="apShowPage('dashboard',this)">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </button>
+      <button class="ap-sb-item" onclick="apShowPage('analytics',this)">
+        <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Analytics
+      </button>
+    </div>
+    <div class="ap-sb-section">
+      <div class="ap-sb-label">Management</div>
+      <button class="ap-sb-item" onclick="apShowPage('workshops',this)">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Workshops <span class="ap-sb-badge">8</span>
+      </button>
+      <button class="ap-sb-item" onclick="apShowPage('registrations',this)">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        Registrations <span class="ap-sb-badge" id="apRegBadge">247</span>
+      </button>
+      <button class="ap-sb-item" onclick="apShowPage('students',this)">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Student Directory
+      </button>
+      <button class="ap-sb-item" onclick="apShowPage('seats',this)">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        Seat Monitor
+      </button>
+      <button class="ap-sb-item" onclick="apShowPage('notifications',this)">
+        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        Notifications
+      </button>
+    </div>
+    <div class="ap-sb-section">
+      <div class="ap-sb-label">Reports</div>
+      <button class="ap-sb-item" onclick="apShowPage('reports',this)">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Reports &amp; Export
+      </button>
+    </div>
+    <div class="ap-sb-sys">
+      <div class="ap-sb-sys-title">System Status</div>
+      <div class="ap-sb-sys-row"><span>Server</span><div class="ap-sb-sys-dot" style="background:#22C55E"></div></div>
+      <div class="ap-sb-sys-row"><span>Database</span><div class="ap-sb-sys-dot" style="background:#22C55E"></div></div>
+      <div class="ap-sb-sys-row"><span>Email</span><div class="ap-sb-sys-dot" style="background:#F59E0B"></div></div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="ap-main">
+
+    <!-- ════ DASHBOARD ════ -->
+    <div id="apPage-dashboard">
+      <div class="ap-page-hdr">
+        <div class="ap-welcome" id="apWelcomeNew">Good morning, Admin! 👋</div>
+        <div class="ap-welcome-sub">
+          <span class="ap-live-dot"></span>
+          <span id="apSubDate">Here's what's happening today.</span>
+        </div>
+      </div>
+      <!-- Stat Cards -->
+      <div class="ap-stats">
+        <div class="ap-stat">
+          <div class="ap-stat-top"><div class="ap-stat-icon" style="background:#EEF2FF"><svg viewBox="0 0 24 24" stroke="#1B3A6B"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div><span class="ap-stat-trend apt-up">↑ +2</span></div>
+          <div class="ap-stat-num">8</div><div class="ap-stat-label">Total Workshops</div>
+        </div>
+        <div class="ap-stat">
+          <div class="ap-stat-top"><div class="ap-stat-icon" style="background:#FFF7ED"><svg viewBox="0 0 24 24" stroke="#C2410C"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><span class="ap-stat-trend apt-new">Next: Mar 15</span></div>
+          <div class="ap-stat-num">5</div><div class="ap-stat-label">Upcoming</div>
+        </div>
+        <div class="ap-stat">
+          <div class="ap-stat-top"><div class="ap-stat-icon" style="background:#ECFDF5"><svg viewBox="0 0 24 24" stroke="#059669"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><span class="ap-stat-trend apt-up">↑ +18 today</span></div>
+          <div class="ap-stat-num" id="apStatReg">247</div><div class="ap-stat-label">Total Registrations</div>
+        </div>
+        <div class="ap-stat">
+          <div class="ap-stat-top"><div class="ap-stat-icon" style="background:#FEF2F2"><svg viewBox="0 0 24 24" stroke="#DC2626"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><span class="ap-stat-trend apt-down">3 unread</span></div>
+          <div class="ap-stat-num" id="apStatMsg">12</div><div class="ap-stat-label">New Messages</div>
+        </div>
+      </div>
+      <!-- Dashboard 3-col grid -->
+      <div class="ap-dashboard-grid">
+        <!-- Left col -->
+        <div class="ap-dashboard-left">
+          <div class="apc">
+            <div class="apc-head"><div><div class="apc-title">Weekly Registrations</div><div class="apc-sub">Sign-ups per day this week</div></div><span class="apc-live">Live</span></div>
+            <div class="apc-body"><div class="adm-bar-wrap" id="apBarNew"></div></div>
+          </div>
+          <div class="apc">
+            <div class="apc-head"><div><div class="apc-title">Recent Registrations</div></div><span class="apc-live">Live</span></div>
+            <div style="overflow-x:auto">
+              <table class="adm-table">
+                <thead><tr><th>Student</th><th>Workshop</th><th>Time</th><th>Status</th></tr></thead>
+                <tbody id="apLiveReg">
+                  <tr><td style="font-weight:600">Priya Sharma</td><td>Machine Learning</td><td style="color:#94A3B8">Just now</td><td><span class="adm-badge adb-green">Confirmed</span></td></tr>
+                  <tr><td style="font-weight:600">Rohit Kumar</td><td>Cybersecurity</td><td style="color:#94A3B8">2 min</td><td><span class="adm-badge adb-green">Confirmed</span></td></tr>
+                  <tr><td style="font-weight:600">Sneha Patel</td><td>Data Science</td><td style="color:#94A3B8">5 min</td><td><span class="adm-badge adb-yellow">Pending</span></td></tr>
+                  <tr><td style="font-weight:600">Arjun Nair</td><td>Communication</td><td style="color:#94A3B8">8 min</td><td><span class="adm-badge adb-green">Confirmed</span></td></tr>
+                  <tr><td style="font-weight:600">Divya Rao</td><td>Web Dev</td><td style="color:#94A3B8">12 min</td><td><span class="adm-badge adb-blue">Waitlisted</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- Middle col -->
+        <div class="ap-dashboard-mid">
+          <div class="apc">
+            <div class="apc-head"><div><div class="apc-title">Workshop Split</div><div class="apc-sub">Online vs Offline</div></div></div>
+            <div class="apc-body">
+              <div class="adm-donut-wrap">
+                <svg width="100" height="100" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="38" fill="none" stroke="#F1F5F9" stroke-width="16"/>
+                  <circle cx="50" cy="50" r="38" fill="none" stroke="#C9A84C" stroke-width="16" stroke-dasharray="143 96" stroke-dashoffset="25" stroke-linecap="round"/>
+                  <circle cx="50" cy="50" r="38" fill="none" stroke="#1B3A6B" stroke-width="16" stroke-dasharray="96 143" stroke-dashoffset="-118" stroke-linecap="round"/>
+                  <text x="50" y="55" text-anchor="middle" font-size="13" font-weight="800" fill="#0D1B2A">60%</text>
+                </svg>
+                <div class="adm-donut-legend">
+                  <div class="adm-dl-item"><div class="adm-dl-dot" style="background:#C9A84C"></div>Online (60%)</div>
+                  <div class="adm-dl-item"><div class="adm-dl-dot" style="background:#1B3A6B"></div>Offline (40%)</div>
+                  <div style="font-size:.72rem;color:#94A3B8;margin-top:8px">8 total workshops</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="apc" style="flex:1">
+            <div class="apc-head"><div class="apc-title">🔔 Activity Feed</div></div>
+            <div class="apc-body" id="apFeedNew">
+              <div class="adm-feed-item"><div class="adm-feed-icon" style="background:#ECFDF5">✅</div><div><div class="adm-feed-text"><strong>Priya Sharma</strong> registered for Machine Learning</div><div class="adm-feed-time">Just now</div></div></div>
+              <div class="adm-feed-item"><div class="adm-feed-icon" style="background:#FFF7ED">📅</div><div><div class="adm-feed-text"><strong>Cloud AWS</strong> seats running low — 6 left</div><div class="adm-feed-time">8 min ago</div></div></div>
+              <div class="adm-feed-item"><div class="adm-feed-icon" style="background:#FFFBEB">⚠️</div><div><div class="adm-feed-text"><strong>Communication Skills</strong> is 90% full</div><div class="adm-feed-time">22 min ago</div></div></div>
+              <div class="adm-feed-item"><div class="adm-feed-icon" style="background:#FEF2F2">💬</div><div><div class="adm-feed-text">New message from <strong>Rohit Kumar</strong></div><div class="adm-feed-time">35 min ago</div></div></div>
+              <div class="adm-feed-item"><div class="adm-feed-icon" style="background:#EEF2FF">📤</div><div><div class="adm-feed-text">Reminder sent to <strong>45 students</strong></div><div class="adm-feed-time">1 hr ago</div></div></div>
+            </div>
+          </div>
+        </div>
+        <!-- Right: Quick Actions -->
+        <div class="ap-quick-panel">
+          <div class="ap-quick-welcome">
+            <h3>Welcome, Admin!</h3>
+            <p>Manage your workshop coordination and registrations efficiently.</p>
+            <div class="ap-quick-actions">
+              <button class="aq-btn aqb-gold" onclick="apShowPage('workshops',null);admToast('📋 Opening Workshop Manager...')">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                Manage Workshops
+              </button>
+              <button class="aq-btn aqb-white" onclick="apShowPage('workshops',null);setTimeout(()=>{document.getElementById('apAddWsForm').style.display='block'},200)">
+                <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add New Workshop
+              </button>
+              <button class="aq-btn aqb-white" onclick="apShowPage('notifications',null)">
+                <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+                Send Notifications
+              </button>
+              <button class="aq-btn aqb-white" onclick="apShowPage('reports',null)">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                Export Reports
+              </button>
+            </div>
+          </div>
+          <div class="apc">
+            <div class="apc-head"><div class="apc-title">Upcoming Workshops</div></div>
+            <div class="apc-body" style="display:flex;flex-direction:column;gap:8px;" id="apMiniWs"></div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /dashboard -->
+
+    <!-- ════ WORKSHOPS PAGE ════ -->
+    <div id="apPage-workshops" style="display:none">
+      <div class="ap-page-hdr">
+        <div class="ap-welcome">Workshops</div>
+        <div class="ap-welcome-sub">Manage all campus workshops — add, edit, delete.</div>
+      </div>
+      <!-- Add form -->
+      <div class="ap-add-form" id="apAddWsForm">
+        <h3>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add New Workshop
+        </h3>
+        <div class="apf-grid">
+          <div class="apf-fg"><label>Workshop Title</label><input type="text" id="apWsTitle" placeholder="e.g. React.js Masterclass"></div>
+          <div class="apf-fg"><label>Instructor</label><input type="text" id="apWsInstructor" placeholder="Dr. / Prof. ..."></div>
+          <div class="apf-fg"><label>Date</label><input type="date" id="apWsDate"></div>
+          <div class="apf-fg"><label>Time</label><input type="text" id="apWsTime" placeholder="10:00 AM – 12:00 PM"></div>
+          <div class="apf-fg"><label>Venue</label><input type="text" id="apWsVenue" placeholder="Hall A or Online (Zoom)"></div>
+          <div class="apf-fg"><label>Type</label><select id="apWsType"><option value="offline">Offline</option><option value="online">Online</option></select></div>
+          <div class="apf-fg"><label>Total Seats</label><input type="number" id="apWsSeats" placeholder="50"></div>
+          <div class="apf-fg"><label>Category</label><select id="apWsCat"><option>Tech</option><option>Data</option><option>Design</option><option>Soft</option></select></div>
+        </div>
+        <div class="apf-fg" style="margin-bottom:16px"><label>Description</label><textarea id="apWsDesc" placeholder="What will students learn?"></textarea></div>
+        <div style="display:flex;gap:10px;">
+          <button class="apf-submit" onclick="apAddWorkshop()">✓ Save Workshop</button>
+          <button onclick="document.getElementById('apAddWsForm').style.display='none'" style="padding:10px 20px;border:1.5px solid #E2E8F0;border-radius:8px;font-size:.83rem;font-weight:600;color:#64748B;cursor:pointer;background:white;font-family:'DM Sans',sans-serif;">Cancel</button>
+        </div>
+      </div>
+      <div class="ap-ws-page-grid">
+        <div class="ap-ws-filter-panel">
+          <h4>Filter By</h4>
+          <div class="ap-ws-filter-item active" onclick="apFilterWs('all',this)">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            All Workshops
+          </div>
+          <div class="ap-ws-filter-item" onclick="apFilterWs('offline',this)">
+            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Offline Workshops
+          </div>
+          <div class="ap-ws-filter-item" onclick="apFilterWs('online',this)">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            Online Workshops
+          </div>
+          <div style="border-top:1px solid #F1F5F9;margin:14px 0;"></div>
+          <h4>By Category</h4>
+          <div class="ap-ws-filter-item" onclick="apFilterWsCat('Tech',this)">💻 Technology</div>
+          <div class="ap-ws-filter-item" onclick="apFilterWsCat('Data',this)">📊 Data &amp; AI</div>
+          <div class="ap-ws-filter-item" onclick="apFilterWsCat('Design',this)">🎨 Design</div>
+          <div class="ap-ws-filter-item" onclick="apFilterWsCat('Soft',this)">🎤 Soft Skills</div>
+        </div>
+        <div class="ap-ws-right">
+          <div class="ap-ws-toolbar">
+            <div class="ap-ws-search">
+              <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input type="text" id="apWsSearchInput" placeholder="Search workshops..." onkeyup="apFilterWsSearch()">
+            </div>
+            <div class="ap-ws-tabs">
+              <button class="ap-ws-tab active" onclick="apWsTab('all',this)">All</button>
+              <button class="ap-ws-tab" onclick="apWsTab('upcoming',this)">Upcoming</button>
+              <button class="ap-ws-tab" onclick="apWsTab('online',this)">Online</button>
+              <button class="ap-ws-tab" onclick="apWsTab('offline',this)">Offline</button>
+            </div>
+            <button class="ap-add-ws-btn" onclick="document.getElementById('apAddWsForm').style.display=document.getElementById('apAddWsForm').style.display==='block'?'none':'block'">+ Add Workshop</button>
+          </div>
+          <div class="ap-ws-cards" id="apWsCards"></div>
+        </div>
+      </div>
+    </div><!-- /workshops -->
+
+    <!-- ════ REGISTRATIONS PAGE ════ -->
+    <div id="apPage-registrations" style="display:none">
+      <div class="ap-page-hdr">
+        <div class="ap-welcome">Registrations</div>
+        <div class="ap-welcome-sub">View and manage all student registrations.</div>
+      </div>
+      <div class="ap-reg-toolbar">
+        <div class="ap-reg-tabs">
+          <div class="ap-reg-tab active" onclick="apRegTab('all',this)">All Workshops</div>
+          <div class="ap-reg-tab" onclick="apRegTab('upcoming',this)">Upcoming</div>
+          <div class="ap-reg-tab" onclick="apRegTab('online',this)">Online Workshops</div>
+          <div class="ap-reg-tab" onclick="apRegTab('offline',this)">Offline Workshops</div>
+        </div>
+        <div style="flex:1"></div>
+        <div class="ap-ws-search" style="max-width:200px">
+          <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="text" id="apRegSearch" placeholder="Search..." onkeyup="apFilterReg()">
+        </div>
+      </div>
+      <div class="apc">
+        <div class="apc-head">
+          <div><div class="apc-title">Registration Records</div><div class="apc-sub" id="apRegCount">247 total registrations</div></div>
+          <div style="display:flex;gap:8px;">
+            <div class="ap-reg-filter-row">
+              <select class="ap-reg-select" id="apRegFilterWs" onchange="apFilterReg()">
+                <option value="">All Workshops</option>
+                <option>Machine Learning</option><option>Cybersecurity</option>
+                <option>Communication Skills</option><option>Data Science</option>
+                <option>Web Dev Bootcamp</option><option>UI/UX Design</option>
+                <option>Cloud AWS</option><option>Public Speaking</option>
+              </select>
+              <select class="ap-reg-select" id="apRegFilterStatus" onchange="apFilterReg()">
+                <option value="">All Status</option>
+                <option>Confirmed</option><option>Pending</option><option>Waitlisted</option><option>Cancelled</option>
+              </select>
+            </div>
+            <button class="ap-reg-btn adrb-gold" onclick="admToast('📥 Exporting CSV...')">Export CSV</button>
+            <button class="ap-reg-btn adrb-outline" onclick="admToast('🖨️ Printing list...')">Print</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="adm-table">
+            <thead><tr><th>Name</th><th>Roll Number</th><th>Email</th><th>Workshop</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="apRegTable">
+              <tr><td style="font-weight:600">Priya Sharma</td><td style="color:#94A3B8">2024CS001</td><td style="color:#64748B">priya@klh.edu.in</td><td>Machine Learning</td><td style="color:#94A3B8">Mar 10</td><td><span class="adm-badge adb-green">Confirmed</span></td><td><button onclick="admToast('📧 Email sent to Priya')" style="padding:3px 9px;font-size:.7rem;font-weight:700;background:#F1F5F9;border:none;border-radius:5px;cursor:pointer;color:#1B3A6B;font-family:'DM Sans',sans-serif;">Email</button></td></tr>
+              <tr><td style="font-weight:600">Rohit Kumar</td><td style="color:#94A3B8">2024EC042</td><td style="color:#64748B">rohit@klh.edu.in</td><td>Cybersecurity</td><td style="color:#94A3B8">Mar 10</td><td><span class="adm-badge adb-green">Confirmed</span></td><td><button onclick="admToast('📧 Email sent to Rohit')" style="padding:3px 9px;font-size:.7rem;font-weight:700;background:#F1F5F9;border:none;border-radius:5px;cursor:pointer;color:#1B3A6B;font-family:'DM Sans',sans-serif;">Email</button></td></tr>
+              <tr><td style="font-weight:600">Sneha Patel</td><td style="color:#94A3B8">2024ME019</td><td style="color:#64748B">sneha@klh.edu.in</td><td>Data Science</td><td style="color:#94A3B8">Mar 11</td><td><span class="adm-badge adb-yellow">Pending</span></td><td><button onclick="admToast('📧 Email sent to Sneha')" style="padding:3px 9px;font-size:.7rem;font-weight:700;background:#F1F5F9;border:none;border-radius:5px;cursor:pointer;color:#1B3A6B;font-family:'DM Sans',sans-serif;">Email</button></td></tr>
+              <tr><td style="font-weight:600">Arjun Nair</td><td style="color:#94A3B8">2024CE007</td><td style="color:#64748B">arjun@klh.edu.in</td><td>Communication Skills</td><td style="color:#94A3B8">Mar 11</td><td><span class="adm-badge adb-green">Confirmed</span></td><td><button onclick="admToast('📧 Email sent to Arjun')" style="padding:3px 9px;font-size:.7rem;font-weight:700;background:#F1F5F9;border:none;border-radius:5px;cursor:pointer;color:#1B3A6B;font-family:'DM Sans',sans-serif;">Email</button></td></tr>
+              <tr><td style="font-weight:600">Divya Rao</td><td style="color:#94A3B8">2024IT031</td><td style="color:#64748B">divya@klh.edu.in</td><td>Web Dev Bootcamp</td><td style="color:#94A3B8">Mar 12</td><td><span class="adm-badge adb-blue">Waitlisted</span></td><td><button onclick="admToast('📧 Email sent to Divya')" style="padding:3px 9px;font-size:.7rem;font-weight:700;background:#F1F5F9;border:none;border-radius:5px;cursor:pointer;color:#1B3A6B;font-family:'DM Sans',sans-serif;">Email</button></td></tr>
+              <tr><td style="font-weight:600">Kiran Mehta</td><td style="color:#94A3B8">2024CS088</td><td style="color:#64748B">kiran@klh.edu.in</td><td>UI/UX Design</td><td style="color:#94A3B8">Mar 12</td><td><span class="adm-badge adb-green">Confirmed</span></td><td><button onclick="admToast('📧 Email sent to Kiran')" style="padding:3px 9px;font-size:.7rem;font-weight:700;background:#F1F5F9;border:none;border-radius:5px;cursor:pointer;color:#1B3A6B;font-family:'DM Sans',sans-serif;">Email</button></td></tr>
+              <tr><td style="font-weight:600">Anika Roy</td><td style="color:#94A3B8">2024EC015</td><td style="color:#64748B">anika@klh.edu.in</td><td>Cloud AWS</td><td style="color:#94A3B8">Mar 13</td><td><span class="adm-badge adb-green">Confirmed</span></td><td><button onclick="admToast('📧 Email sent to Anika')" style="padding:3px 9px;font-size:.7rem;font-weight:700;background:#F1F5F9;border:none;border-radius:5px;cursor:pointer;color:#1B3A6B;font-family:'DM Sans',sans-serif;">Email</button></td></tr>
+              <tr><td style="font-weight:600">Vikram Singh</td><td style="color:#94A3B8">2024ME052</td><td style="color:#64748B">vikram@klh.edu.in</td><td>Public Speaking</td><td style="color:#94A3B8">Mar 13</td><td><span class="adm-badge adb-red">Cancelled</span></td><td><button onclick="admToast('📧 Email sent to Vikram')" style="padding:3px 9px;font-size:.7rem;font-weight:700;background:#F1F5F9;border:none;border-radius:5px;cursor:pointer;color:#1B3A6B;font-family:'DM Sans',sans-serif;">Email</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div><!-- /registrations -->
+
+    <!-- ════ ANALYTICS PAGE ════ -->
+    <div id="apPage-analytics" style="display:none">
+      <div class="ap-page-hdr">
+        <div class="ap-welcome">Analytics &amp; Insights</div>
+        <div class="ap-welcome-sub">Deep dive into workshop performance and engagement.</div>
+      </div>
+      <div class="ap-stats" style="margin-bottom:20px;">
+        <div class="ap-stat"><div class="ap-stat-top"><div class="ap-stat-icon" style="background:#FFF7ED"><svg viewBox="0 0 24 24" stroke="#C2410C"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><span class="ap-stat-trend apt-up">↑ +4%</span></div><div class="ap-stat-num">87%</div><div class="ap-stat-label">Attendance Rate</div></div>
+        <div class="ap-stat"><div class="ap-stat-top"><div class="ap-stat-icon" style="background:#ECFDF5"><svg viewBox="0 0 24 24" stroke="#059669"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div><span class="ap-stat-trend apt-up">↑ +0.2</span></div><div class="ap-stat-num">4.7</div><div class="ap-stat-label">Avg. Rating</div></div>
+        <div class="ap-stat"><div class="ap-stat-top"><div class="ap-stat-icon" style="background:#EEF2FF"><svg viewBox="0 0 24 24" stroke="#4338CA"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><span class="ap-stat-trend apt-new">Stable</span></div><div class="ap-stat-num">2.4h</div><div class="ap-stat-label">Avg. Duration</div></div>
+        <div class="ap-stat"><div class="ap-stat-top"><div class="ap-stat-icon" style="background:#F0FDFA"><svg viewBox="0 0 24 24" stroke="#0D9488"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><span class="ap-stat-trend apt-up">↑ +6%</span></div><div class="ap-stat-num">76%</div><div class="ap-stat-label">Seat Fill Rate</div></div>
+      </div>
+      <!-- Heatmap -->
+      <div class="apc" style="margin-bottom:16px">
+        <div class="apc-head"><div><div class="apc-title">Registration Heatmap</div><div class="apc-sub">Activity over past 4 weeks — darker = more registrations</div></div></div>
+        <div class="apc-body">
+          <div style="display:flex;gap:6px;font-size:.65rem;color:#94A3B8;margin-bottom:6px;"><span style="width:32px"></span><span style="flex:1;text-align:center">Mon</span><span style="flex:1;text-align:center">Tue</span><span style="flex:1;text-align:center">Wed</span><span style="flex:1;text-align:center">Thu</span><span style="flex:1;text-align:center">Fri</span><span style="flex:1;text-align:center">Sat</span><span style="flex:1;text-align:center">Sun</span></div>
+          <div id="apHeatmapNew"></div>
+        </div>
+      </div>
+      <!-- Performance table -->
+      <div class="apc">
+        <div class="apc-head"><div class="apc-title">Workshop Performance</div></div>
+        <div style="overflow-x:auto"><table class="adm-table"><thead><tr><th>Workshop</th><th>Instructor</th><th>Registered</th><th>Capacity</th><th>Fill %</th><th>Rating</th></tr></thead><tbody id="apAnalyticsTable"></tbody></table></div>
+      </div>
+    </div><!-- /analytics -->
+
+    <!-- ════ NOTIFICATIONS PAGE ════ -->
+    <div id="apPage-notifications" style="display:none">
+      <div class="ap-page-hdr">
+        <div class="ap-welcome">Send Notifications</div>
+        <div class="ap-welcome-sub">Communicate with students registered across workshops.</div>
+      </div>
+      <div class="ap-notif-grid">
+        <div class="apc">
+          <div class="apc-head"><div class="apc-title">Compose Message</div></div>
+          <div class="apc-body">
+            <div class="ntag-label">Send To</div>
+            <div class="notif-to-wrap">
+              <div class="ntag sel" onclick="this.classList.toggle('sel')">All Students</div>
+              <div class="ntag" onclick="this.classList.toggle('sel')">Machine Learning</div>
+              <div class="ntag" onclick="this.classList.toggle('sel')">Cybersecurity</div>
+              <div class="ntag" onclick="this.classList.toggle('sel')">Data Science</div>
+              <div class="ntag" onclick="this.classList.toggle('sel')">Web Dev</div>
+              <div class="ntag" onclick="this.classList.toggle('sel')">UI/UX Design</div>
+              <div class="ntag" onclick="this.classList.toggle('sel')">Cloud AWS</div>
+              <div class="ntag" onclick="this.classList.toggle('sel')">Public Speaking</div>
+            </div>
+            <div class="ntag-label" style="margin-top:14px;">Message Type</div>
+            <div class="notif-to-wrap">
+              <div class="ntag sel" onclick="this.classList.toggle('sel')">📢 Announcement</div>
+              <div class="ntag" onclick="this.classList.toggle('sel')">⏰ Reminder</div>
+              <div class="ntag" onclick="this.classList.toggle('sel')">⚠️ Alert</div>
+            </div>
+            <div class="ntag-label" style="margin-top:14px;">Subject</div>
+            <input type="text" id="apNotifSubject" placeholder="Message subject..." style="width:100%;padding:9px 12px;border:1.5px solid #E2E8F0;border-radius:8px;font-size:.83rem;color:#0D1B2A;background:#FAFBFF;outline:none;font-family:'DM Sans',sans-serif;margin-bottom:10px;transition:.15s;box-sizing:border-box;" onfocus="this.style.borderColor='#C9A84C'" onblur="this.style.borderColor='#E2E8F0'">
+            <div class="ntag-label">Message</div>
+            <textarea class="notif-msg-area" id="apNotifMsg" placeholder="Write your message here..."></textarea>
+            <div class="notif-send-row">
+              <button class="ns-btn nsb-gold" onclick="apSendNotif()">📤 Send Now</button>
+              <button class="ns-btn nsb-outline" onclick="admToast('⏰ Scheduled for tomorrow 9 AM!')">🕐 Schedule</button>
+              <button class="ns-btn nsb-outline" onclick="admToast('👁 Preview opened')">Preview</button>
+            </div>
+          </div>
+        </div>
+        <div class="apc">
+          <div class="apc-head"><div class="apc-title">Notification History</div></div>
+          <div class="apc-body">
+            <div class="adm-feed-item"><div class="adm-feed-icon" style="background:#ECFDF5">📤</div><div><div class="adm-feed-text">Reminder sent to <strong>All Students</strong> — "Workshops start this week!"</div><div class="adm-feed-time">Yesterday 9:00 AM · 247 recipients</div></div></div>
+            <div class="adm-feed-item"><div class="adm-feed-icon" style="background:#FFF7ED">⚠️</div><div><div class="adm-feed-text">Alert: <strong>Communication Skills</strong> — "Venue changed to Hall C"</div><div class="adm-feed-time">Mar 11 · 27 recipients</div></div></div>
+            <div class="adm-feed-item"><div class="adm-feed-icon" style="background:#EEF2FF">🎉</div><div><div class="adm-feed-text">Welcome email to <strong>New Registrations</strong></div><div class="adm-feed-time">Mar 10 · 38 recipients</div></div></div>
+            <div class="adm-feed-item"><div class="adm-feed-icon" style="background:#F0FDF4">📅</div><div><div class="adm-feed-text">Schedule announcement to <strong>All Students</strong></div><div class="adm-feed-time">Mar 8 · 180 recipients</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /notifications -->
+
+    <!-- ════ STUDENT DIRECTORY PAGE ════ -->
+    <div id="apPage-students" style="display:none">
+      <div class="ap-page-hdr">
+        <div class="ap-welcome">Student Directory</div>
+        <div class="ap-welcome-sub">Complete directory of all registered students.</div>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+        <div class="ap-ws-search" style="flex:1;min-width:180px">
+          <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="text" id="apStuSearch" placeholder="Search name, roll, workshop..." onkeyup="apFilterStudents()">
+        </div>
+        <select id="apStuWsF" onchange="apFilterStudents()" class="ap-reg-select">
+          <option value="">All Workshops</option>
+          <option>Machine Learning</option><option>Cybersecurity</option>
+          <option>Communication Skills</option><option>Data Science</option>
+          <option>Web Dev Bootcamp</option><option>UI/UX Design</option>
+          <option>Cloud AWS</option><option>Public Speaking</option>
+        </select>
+        <select id="apStuStF" onchange="apFilterStudents()" class="ap-reg-select">
+          <option value="">All Status</option>
+          <option>Confirmed</option><option>Pending</option><option>Waitlisted</option><option>Cancelled</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;" id="apStuSummary"></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;" id="apStuGrid"></div>
+    </div><!-- /students -->
+
+    <!-- ════ SEAT MONITOR PAGE ════ -->
+    <div id="apPage-seats" style="display:none">
+      <div class="ap-page-hdr">
+        <div class="ap-welcome">Seat Capacity Monitor</div>
+        <div class="ap-welcome-sub">Real-time seat occupancy — red alerts at 90%+, yellow warnings at 70%+.</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:20px;" id="apSeatGrid"></div>
+      <div class="apc">
+        <div class="apc-head"><div><div class="apc-title">Overall Capacity</div><div class="apc-sub" id="apCapacityText">Loading...</div></div><span class="apc-live">Live</span></div>
+        <div class="apc-body">
+          <div style="height:10px;background:#F1F5F9;border-radius:5px;overflow:hidden;margin-bottom:16px;"><div id="apCapacityBar" style="height:100%;width:0%;background:linear-gradient(90deg,#A0832A,#C9A84C);border-radius:5px;transition:1.2s ease;"></div></div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;" id="apCapacitySummary"></div>
+        </div>
+      </div>
+    </div><!-- /seats -->
+
+    <!-- ════ REPORTS PAGE ════ -->
+    <div id="apPage-reports" style="display:none">
+      <div class="ap-page-hdr">
+        <div class="ap-welcome">Reports &amp; Exports</div>
+        <div class="ap-welcome-sub">Download detailed reports on registrations, attendance and performance.</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+        <div class="apc" style="cursor:pointer" onclick="admToast('📥 Downloading Registration Report...')">
+          <div class="apc-body" style="text-align:center;padding:32px 20px;">
+            <div style="width:60px;height:60px;background:#EEF2FF;border-radius:14px;display:grid;place-items:center;margin:0 auto 14px;font-size:1.6rem;">📊</div>
+            <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:1rem;color:#0D1B2A;margin-bottom:6px;">Registration Report</div>
+            <div style="font-size:.78rem;color:#94A3B8;margin-bottom:18px;line-height:1.5">All student registrations with status, workshop and date.</div>
+            <button class="ap-add-ws-btn" style="display:block;width:100%;text-align:center;">Download CSV</button>
+          </div>
+        </div>
+        <div class="apc" style="cursor:pointer" onclick="admToast('📥 Downloading Attendance Report...')">
+          <div class="apc-body" style="text-align:center;padding:32px 20px;">
+            <div style="width:60px;height:60px;background:#ECFDF5;border-radius:14px;display:grid;place-items:center;margin:0 auto 14px;font-size:1.6rem;">📋</div>
+            <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:1rem;color:#0D1B2A;margin-bottom:6px;">Attendance Report</div>
+            <div style="font-size:.78rem;color:#94A3B8;margin-bottom:18px;line-height:1.5">Who attended vs registered, with attendance rate per workshop.</div>
+            <button class="ap-add-ws-btn" style="display:block;width:100%;text-align:center;">Download PDF</button>
+          </div>
+        </div>
+        <div class="apc" style="cursor:pointer" onclick="admToast('📥 Downloading Analytics Report...')">
+          <div class="apc-body" style="text-align:center;padding:32px 20px;">
+            <div style="width:60px;height:60px;background:#FFF7ED;border-radius:14px;display:grid;place-items:center;margin:0 auto 14px;font-size:1.6rem;">📈</div>
+            <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:1rem;color:#0D1B2A;margin-bottom:6px;">Analytics Summary</div>
+            <div style="font-size:.78rem;color:#94A3B8;margin-bottom:18px;line-height:1.5">Engagement metrics, ratings, seat fill rates and trends.</div>
+            <button class="ap-add-ws-btn" style="display:block;width:100%;text-align:center;">Download PDF</button>
+          </div>
+        </div>
+      </div>
+    </div><!-- /reports -->
+
+  </div><!-- /ap-main -->
+</div><!-- /ap-body -->
+
+<!-- TOAST -->
+<div class="adm-toast" id="admToastEl"></div>
+
+</div><!-- /#adminPortal -->
+
+<script src="js/admin.js"></script>
+</body>
+</html>
